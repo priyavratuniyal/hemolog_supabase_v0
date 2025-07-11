@@ -14,21 +14,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install Supabase CLI
+        run: |
+          echo "Installing Supabase CLI..."
+          npm install -g @supabase/cli@latest
+          supabase --version
+
+      - name: Login to Supabase
+        run: |
+          echo "Logging in to Supabase..."
+          echo ${{ secrets.SUPABASE_ACCESS_TOKEN }} | supabase login
+          echo "✅ Login successful!"
+
       - name: Deploy Edge Functions
         run: |
           echo "🚀 Deploying Supabase Edge Functions..."
-          
-          # Read the function code
-          FUNCTION_CODE=$(cat supabase/functions/send-welcome-email/index.ts)
-          
-          # Deploy using Supabase Management API
-          curl -X POST \
-            "https://api.supabase.com/v1/projects/${{ secrets.SUPABASE_PROJECT_REF }}/functions/send-welcome-email" \
-            -H "Authorization: Bearer ${{ secrets.SUPABASE_ACCESS_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d "{\"code\": \"$FUNCTION_CODE\"}" \
-            || echo "⚠️ Function deployment failed - check Supabase Dashboard"
-          
+          supabase functions deploy send-welcome-email --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
           echo "✅ Deployment completed!"
           echo "📊 Monitor at: https://supabase.com/dashboard/project/${{ secrets.SUPABASE_PROJECT_REF }}/functions"
 
@@ -39,6 +40,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Install Supabase CLI
+        run: |
+          echo "Installing Supabase CLI..."
+          npm install -g @supabase/cli@latest
+          supabase --version
 
       - name: Validate Functions
         run: |
