@@ -17,7 +17,7 @@ jobs:
       - name: Install Supabase CLI
         run: |
           echo "Installing Supabase CLI..."
-          npm install -g @supabase/cli@latest
+          npm install -g supabase@latest
           supabase --version
 
       - name: Login to Supabase
@@ -44,7 +44,7 @@ jobs:
       - name: Install Supabase CLI
         run: |
           echo "Installing Supabase CLI..."
-          npm install -g @supabase/cli@latest
+          npm install -g supabase@latest
           supabase --version
 
       - name: Validate Functions
