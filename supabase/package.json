@@ -1,0 +1,14 @@
+{
+  "name": "hemolog-supabase-functions",
+  "version": "1.0.0",
+  "description": "Supabase Edge Functions for Hemolog",
+  "scripts": {
+    "deploy": "supabase functions deploy",
+    "deploy:all": "supabase functions deploy --project-ref wbnixypynbfwmwucplmp",
+    "logs": "supabase functions logs",
+    "secrets:set": "supabase secrets set"
+  },
+  "devDependencies": {
+    "supabase": "^1.0.0"
+  }
+}
