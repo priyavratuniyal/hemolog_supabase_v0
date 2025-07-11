@@ -16,13 +16,13 @@ jobs:
 
       - name: Install Supabase CLI
         run: |
-          curl -fsSL https://supabase.com/install.sh | sh
-          export PATH="$HOME/.local/bin:$PATH"
+          wget -O supabase https://github.com/supabase/cli/releases/latest/download/supabase_linux_amd64
+          chmod +x supabase
+          sudo mv supabase /usr/local/bin/
           supabase --version
 
       - name: Deploy Edge Functions
         run: |
-          export PATH="$HOME/.local/bin:$PATH"
           echo "Deploying Supabase Edge Functions..."
           supabase functions deploy --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
           echo "✅ Deployment completed successfully!"
@@ -39,13 +39,13 @@ jobs:
 
       - name: Install Supabase CLI
         run: |
-          curl -fsSL https://supabase.com/install.sh | sh
-          export PATH="$HOME/.local/bin:$PATH"
+          wget -O supabase https://github.com/supabase/cli/releases/latest/download/supabase_linux_amd64
+          chmod +x supabase
+          sudo mv supabase /usr/local/bin/
           supabase --version
 
       - name: Validate Functions
         run: |
-          export PATH="$HOME/.local/bin:$PATH"
           echo "Validating functions for PR..."
           supabase functions deploy --dry-run --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
         env:
