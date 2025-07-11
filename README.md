@@ -1,183 +1,192 @@
-# Supabase CLI (v1)
+# Hemolog Supabase Backend
 
-[![Coverage Status](https://coveralls.io/repos/github/supabase/cli/badge.svg?branch=main)](https://coveralls.io/github/supabase/cli?branch=main) [![Bitbucket Pipelines](https://img.shields.io/bitbucket/pipelines/supabase-cli/setup-cli/master?style=flat-square&label=Bitbucket%20Canary)](https://bitbucket.org/supabase-cli/setup-cli/pipelines) [![Gitlab Pipeline Status](https://img.shields.io/gitlab/pipeline-status/sweatybridge%2Fsetup-cli?label=Gitlab%20Canary)
-](https://gitlab.com/sweatybridge/setup-cli/-/pipelines)
+This repository contains the Supabase backend configuration for Hemolog, including Edge Functions, database migrations, and CI/CD pipeline.
 
-[Supabase](https://supabase.io) is an open source Firebase alternative. We're building the features of Firebase using enterprise-grade open source tools.
+## 🚀 Quick Start
 
-This repository contains all the functionality for Supabase CLI.
+### Prerequisites
+- Node.js 18+
+- Supabase CLI
+- GitHub account with repository access
 
-- [x] Running Supabase locally
-- [x] Managing database migrations
-- [x] Creating and deploying Supabase Functions
-- [x] Generating types directly from your database schema
-- [x] Making authenticated HTTP requests to [Management API](https://supabase.com/docs/reference/api/introduction)
+### Local Development
 
-## Getting started
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd hemolog_v0_supabase
+   ```
 
-### Install the CLI
+2. **Install Supabase CLI**
+   ```bash
+   npm install -g supabase@latest
+   ```
 
-Available via [NPM](https://www.npmjs.com) as dev dependency. To install:
+3. **Link to your Supabase project**
+   ```bash
+   supabase link --project-ref wbnixypynbfwmwucplmp
+   ```
 
-```bash
-npm i supabase --save-dev
-```
+4. **Start local development**
+   ```bash
+   supabase start
+   ```
 
-To install the beta release channel:
+## 🔧 Edge Functions
 
-```bash
-npm i supabase@beta --save-dev
-```
+### Available Functions
 
-When installing with yarn 4, you need to disable experimental fetch with the following nodejs config.
+- **`send-welcome-email`**: Sends welcome emails to new waitlist signups
+  - Uses Resend API for email delivery
+  - Includes both HTML and text versions
+  - Branded with Hemolog styling
 
-```
-NODE_OPTIONS=--no-experimental-fetch yarn add supabase
-```
-
-> **Note**
-For Bun versions below v1.0.17, you must add `supabase` as a [trusted dependency](https://bun.sh/guides/install/trusted) before running `bun add -D supabase`.
-
-<details>
-  <summary><b>macOS</b></summary>
-
-  Available via [Homebrew](https://brew.sh). To install:
-
-  ```sh
-  brew install supabase/tap/supabase
-  ```
-
-  To install the beta release channel:
-  
-  ```sh
-  brew install supabase/tap/supabase-beta
-  brew link --overwrite supabase-beta
-  ```
-  
-  To upgrade:
-
-  ```sh
-  brew upgrade supabase
-  ```
-</details>
-
-<details>
-  <summary><b>Windows</b></summary>
-
-  Available via [Scoop](https://scoop.sh). To install:
-
-  ```powershell
-  scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
-  scoop install supabase
-  ```
-
-  To upgrade:
-
-  ```powershell
-  scoop update supabase
-  ```
-</details>
-
-<details>
-  <summary><b>Linux</b></summary>
-
-  Available via [Homebrew](https://brew.sh) and Linux packages.
-
-  #### via Homebrew
-
-  To install:
-
-  ```sh
-  brew install supabase/tap/supabase
-  ```
-
-  To upgrade:
-
-  ```sh
-  brew upgrade supabase
-  ```
-
-  #### via Linux packages
-
-  Linux packages are provided in [Releases](https://github.com/supabase/cli/releases). To install, download the `.apk`/`.deb`/`.rpm`/`.pkg.tar.zst` file depending on your package manager and run the respective commands.
-
-  ```sh
-  sudo apk add --allow-untrusted <...>.apk
-  ```
-
-  ```sh
-  sudo dpkg -i <...>.deb
-  ```
-
-  ```sh
-  sudo rpm -i <...>.rpm
-  ```
-
-  ```sh
-  sudo pacman -U <...>.pkg.tar.zst
-  ```
-</details>
-
-<details>
-  <summary><b>Other Platforms</b></summary>
-
-  You can also install the CLI via [go modules](https://go.dev/ref/mod#go-install) without the help of package managers.
-
-  ```sh
-  go install github.com/supabase/cli@latest
-  ```
-
-  Add a symlink to the binary in `$PATH` for easier access:
-
-  ```sh
-  ln -s "$(go env GOPATH)/bin/cli" /usr/bin/supabase
-  ```
-
-  This works on other non-standard Linux distros.
-</details>
-
-<details>
-  <summary><b>Community Maintained Packages</b></summary>
-
-  Available via [pkgx](https://pkgx.sh/). Package script [here](https://github.com/pkgxdev/pantry/blob/main/projects/supabase.com/cli/package.yml).
-  To install in your working directory:
-
-  ```bash
-  pkgx install supabase
-  ```
-
-  Available via [Nixpkgs](https://nixos.org/). Package script [here](https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/tools/supabase-cli/default.nix).
-</details>
-
-### Run the CLI
+### Local Development
 
 ```bash
-supabase bootstrap
+# Deploy a specific function
+supabase functions deploy send-welcome-email
+
+# Deploy all functions
+supabase functions deploy
+
+# Test function locally
+supabase functions serve send-welcome-email
 ```
 
-Or using npx:
+## 🚀 CI/CD Pipeline
+
+This repository includes automated deployment via GitHub Actions.
+
+### How it works
+
+1. **Push to main branch**: Automatically deploys all Edge Functions
+2. **Pull Request**: Runs validation tests without deployment
+3. **Path-based triggers**: Only runs when `supabase/functions/**` files change
+
+### Setup Required
+
+You need to add these secrets to your GitHub repository:
+
+1. Go to your GitHub repository settings
+2. Navigate to **Secrets and variables** → **Actions**
+3. Add these secrets:
+
+   - `SUPABASE_ACCESS_TOKEN`: Your Supabase access token
+   - `SUPABASE_PROJECT_REF`: Your project reference (e.g., `wbnixypynbfwmwucplmp`)
+
+### Getting Supabase Access Token
+
+1. Go to [Supabase Dashboard](https://supabase.com/dashboard)
+2. Navigate to **Account** → **Access Tokens**
+3. Generate a new token with appropriate permissions
+4. Copy the token to your GitHub secrets
+
+### Manual Deployment
+
+If you need to deploy manually:
 
 ```bash
-npx supabase bootstrap
+# Deploy all functions
+supabase functions deploy --project-ref wbnixypynbfwmwucplmp
+
+# Deploy specific function
+supabase functions deploy send-welcome-email --project-ref wbnixypynbfwmwucplmp
 ```
 
-The bootstrap command will guide you through the process of setting up a Supabase project using one of the [starter](https://github.com/supabase-community/supabase-samples/blob/main/samples.json) templates.
+## 📁 Project Structure
 
-## Docs
-
-Command & config reference can be found [here](https://supabase.com/docs/reference/cli/about).
-
-## Breaking changes
-
-We follow semantic versioning for changes that directly impact CLI commands, flags, and configurations.
-
-However, due to dependencies on other service images, we cannot guarantee that schema migrations, seed.sql, and generated types will always work for the same CLI major version. If you need such guarantees, we encourage you to pin a specific version of CLI in package.json.
-
-## Developing
-
-To run from source:
-
-```sh
-# Go >= 1.22
-go run . help
 ```
+hemolog_v0_supabase/
+├── .github/
+│   └── workflows/
+│       └── supabase-deploy.yml    # CI/CD pipeline
+├── supabase/
+│   ├── config.toml                # Supabase configuration
+│   ├── functions/
+│   │   └── send-welcome-email/    # Email function
+│   └── migrations/                # Database migrations
+└── README.md
+```
+
+## 🔐 Environment Variables
+
+The Edge Functions require these environment variables:
+
+- `RESEND_API_KEY`: Your Resend API key for email sending
+
+### Setting Environment Variables
+
+1. **Via Supabase Dashboard**:
+   - Go to **Settings** → **Edge Functions**
+   - Add environment variables
+
+2. **Via CLI**:
+   ```bash
+   supabase secrets set RESEND_API_KEY=your_api_key
+   ```
+
+## 📧 Email Function Details
+
+The `send-welcome-email` function:
+
+- **Trigger**: Called from the main landing page when users join waitlist
+- **Features**: 
+  - Professional HTML email template
+  - Mobile-responsive design
+  - Brand-consistent styling
+  - Both HTML and text versions
+  - Trust badges and compliance info
+- **Dependencies**: Resend API for email delivery
+
+## 🛠️ Development Workflow
+
+1. **Make changes** to Edge Functions
+2. **Test locally** with `supabase functions serve`
+3. **Push to main** for automatic deployment
+4. **Monitor deployment** in GitHub Actions
+
+## 📊 Monitoring
+
+- **GitHub Actions**: Check deployment status in Actions tab
+- **Supabase Dashboard**: Monitor function logs and performance
+- **Email Delivery**: Check Resend dashboard for email delivery status
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+1. **Deployment fails**:
+   - Check GitHub secrets are set correctly
+   - Verify Supabase access token has proper permissions
+   - Check function syntax and dependencies
+
+2. **Email not sending**:
+   - Verify `RESEND_API_KEY` is set
+   - Check function logs in Supabase dashboard
+   - Test with valid email address
+
+3. **Local development issues**:
+   - Ensure Docker is running for local Supabase
+   - Check Node.js version (18+ required)
+   - Verify Supabase CLI is installed
+
+### Getting Help
+
+- Check [Supabase Documentation](https://supabase.com/docs)
+- Review [GitHub Actions logs](https://github.com/your-repo/actions)
+- Check [Supabase Dashboard](https://supabase.com/dashboard) for logs
+
+## 📝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test locally
+5. Submit a pull request
+
+The CI/CD pipeline will automatically test your changes before merging.
+
+---
+
+**Hemolog Health Technologies** - Dehradun, Uttarakhand, India

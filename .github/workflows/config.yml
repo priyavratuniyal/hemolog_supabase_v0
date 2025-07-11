@@ -1,0 +1,26 @@
+# Hemolog CI/CD Configuration
+# This file contains configuration settings for the deployment pipeline
+
+# Project settings
+project:
+  ref: wbnixypynbfwmwucplmp
+  name: hemolog-supabase
+
+# Deployment settings
+deployment:
+  auto_deploy: true
+  test_on_pr: true
+  notify_on_success: true
+
+# Functions to deploy
+functions:
+  - send-welcome-email
+
+# Environment variables required
+required_env_vars:
+  - RESEND_API_KEY
+
+# GitHub secrets required
+required_secrets:
+  - SUPABASE_ACCESS_TOKEN
+  - SUPABASE_PROJECT_REF 
