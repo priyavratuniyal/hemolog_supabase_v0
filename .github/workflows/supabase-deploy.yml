@@ -14,24 +14,33 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
       - name: Install Supabase CLI
         run: |
-          echo "Installing Supabase CLI..."
-          npm install -g supabase@latest
-          supabase --version
+          echo "Installing Supabase CLI locally..."
+          npm install supabase@latest
+          npx supabase --version
 
       - name: Login to Supabase
         run: |
           echo "Logging in to Supabase..."
-          echo ${{ secrets.SUPABASE_ACCESS_TOKEN }} | supabase login
+          npx supabase login
           echo "✅ Login successful!"
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
 
       - name: Deploy Edge Functions
         run: |
           echo "🚀 Deploying Supabase Edge Functions..."
-          supabase functions deploy send-welcome-email --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
+          npx supabase functions deploy send-welcome-email --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
           echo "✅ Deployment completed!"
           echo "📊 Monitor at: https://supabase.com/dashboard/project/${{ secrets.SUPABASE_PROJECT_REF }}/functions"
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
 
   test:
     runs-on: ubuntu-latest
@@ -41,11 +50,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
       - name: Install Supabase CLI
         run: |
-          echo "Installing Supabase CLI..."
-          npm install -g supabase@latest
-          supabase --version
+          echo "Installing Supabase CLI locally..."
+          npm install supabase@latest
+          npx supabase --version
 
       - name: Validate Functions
         run: |
